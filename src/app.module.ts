@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { CustomerModule } from './customer/customer.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
-
+import { PaymentMethodModule } from './payment_method/payment_method.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -23,6 +23,8 @@ import { AdminModule } from './admin/admin.module';
     AdminModule,
     AuthModule,
     CustomerModule,
+    PaymentMethodModule,
+
   ],
   controllers: [],
   providers: [],
