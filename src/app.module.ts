@@ -7,6 +7,7 @@ import { AdminModule } from './admin/admin.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
 import { ProductModule } from './product/product.module';
 import { ProductDetailsModule } from './product_details/product_details.module';
+import { ProductCategoryModule } from './product_category/product_category.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -26,8 +27,11 @@ import { ProductDetailsModule } from './product_details/product_details.module';
     AuthModule,
     CustomerModule,
     PaymentMethodModule,
+    ProductCategoryModule,
     ProductModule,
-    ProductDetailsModule,
+    ProductDetailsModule
+
+
   ],
   controllers: [],
   providers: [],
