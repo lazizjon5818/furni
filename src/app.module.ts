@@ -10,6 +10,8 @@ import { ProductDetailsModule } from './product_details/product_details.module';
 import { ProductCategoryModule } from './product_category/product_category.module';
 import { OrderModule } from './order/order.module';
 import { OrderItemModule } from './order_item/order_item.module';
+import { OrderAddressModule } from './order_address/order_address.module';
+import { PaymentModule } from './payment/payment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -33,7 +35,9 @@ import { OrderItemModule } from './order_item/order_item.module';
     ProductModule,
     ProductDetailsModule,
     OrderModule,
-    OrderItemModule
+    OrderItemModule,
+    OrderAddressModule,
+    PaymentModule
   ],
   controllers: [],
   providers: [],
