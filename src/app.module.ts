@@ -30,8 +30,6 @@ import { ProductCategoryModule } from './product_category/product_category.modul
     ProductCategoryModule,
     ProductModule,
     ProductDetailsModule
-
-
   ],
   controllers: [],
   providers: [],

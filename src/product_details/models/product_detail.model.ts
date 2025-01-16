@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { ProductCategory } from 'src/product_category/models/product_category.model';
 
 export interface IProductDetailCreationArrt {
   productId: number;
@@ -22,7 +30,10 @@ export interface IProductDetailCreationArrt {
 }
 
 @Table({ tableName: 'product_details', timestamps: false })
-export class ProductDetail extends Model<ProductDetail, IProductDetailCreationArrt> {
+export class ProductDetail extends Model<
+  ProductDetail,
+  IProductDetailCreationArrt
+> {
   @ApiProperty({ example: 1, description: 'Detail ID (Primary Key)' })
   @Column({
     type: DataType.INTEGER,
@@ -35,6 +46,7 @@ export class ProductDetail extends Model<ProductDetail, IProductDetailCreationAr
     example: 1,
     description: 'Product ID to which the details belong',
   })
+  @ForeignKey(() => ProductCategory)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -188,4 +200,8 @@ export class ProductDetail extends Model<ProductDetail, IProductDetailCreationAr
     allowNull: true,
   })
   domestic_warranty: string;
+
+  // Add other relevant fields and relationships here
+  @BelongsTo(() => ProductCategory)
+  product_category: ProductCategory;
 }
