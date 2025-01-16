@@ -7,6 +7,14 @@ import { AdminModule } from './admin/admin.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { ProductRatingModule } from './product_rating/product_rating.module';
+import { ProductModule } from './product/product.module';
+import { ProductDetailsModule } from './product_details/product_details.module';
+import { ProductCategoryModule } from './product_category/product_category.module';
+import { OrderModule } from './order/order.module';
+import { OrderItemModule } from './order_item/order_item.module';
+import { OrderAddressModule } from './order_address/order_address.module';
+import { PaymentModule } from './payment/payment.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -28,7 +36,13 @@ import { ProductRatingModule } from './product_rating/product_rating.module';
     PaymentMethodModule,
     WishlistModule,
     ProductRatingModule,
-
+    ProductCategoryModule,
+    ProductModule,
+    ProductDetailsModule,
+    OrderModule,
+    OrderItemModule,
+    OrderAddressModule,
+    PaymentModule
   ],
   controllers: [],
   providers: [],
