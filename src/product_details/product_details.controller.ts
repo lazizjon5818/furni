@@ -15,7 +15,7 @@ import { UpdateProductDetailDto } from './dto/update-product_detail.dto';
 import { ProductDetailsService } from './product_details.service';
 import { Public } from 'src/common/decorators';
 
-// @UseGuards(AdminGuard)
+@UseGuards(AdminGuard)
 @Controller('product-details')
 export class ProductDetailsController {
   constructor(private readonly productDetailsService: ProductDetailsService) {}

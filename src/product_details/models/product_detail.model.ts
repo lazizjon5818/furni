@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { ProductCategory } from 'src/product_category/models/product_category.model';
 
 export interface IProductDetailCreationArrt {
   productId: number;
@@ -14,15 +22,14 @@ export interface IProductDetailCreationArrt {
   filling_material?: string;
   max_load_capacity?: number;
   origin_country?: string;
-  warranty_summary?: string;
-  warranty_service_type?: string;
-  covered_in_warranty?: string;
-  not_covered_in_warranty?: string;
-  domestic_warranty?: string;
+  warranty_summary: string;
 }
 
 @Table({ tableName: 'product_details', timestamps: false })
-export class ProductDetail extends Model<ProductDetail, IProductDetailCreationArrt> {
+export class ProductDetail extends Model<
+  ProductDetail,
+  IProductDetailCreationArrt
+> {
   @ApiProperty({ example: 1, description: 'Detail ID (Primary Key)' })
   @Column({
     type: DataType.INTEGER,
@@ -35,6 +42,7 @@ export class ProductDetail extends Model<ProductDetail, IProductDetailCreationAr
     example: 1,
     description: 'Product ID to which the details belong',
   })
+  @ForeignKey(() => ProductCategory)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -149,43 +157,7 @@ export class ProductDetail extends Model<ProductDetail, IProductDetailCreationAr
   })
   warranty_summary: string;
 
-  @ApiProperty({
-    example: 'On-site',
-    description: 'Type of warranty service provided',
-  })
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  warranty_service_type: string;
-
-  @ApiProperty({
-    example: 'All parts except fabric',
-    description: 'Items covered in warranty',
-  })
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  covered_in_warranty: string;
-
-  @ApiProperty({
-    example: 'Fabric damage',
-    description: 'Items not covered in warranty',
-  })
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  not_covered_in_warranty: string;
-
-  @ApiProperty({
-    example: '1 year',
-    description: 'Domestic warranty of the product',
-  })
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  domestic_warranty: string;
+  // Add other relevant fields and relationships here
+  @BelongsTo(() => ProductCategory)
+  product_category: ProductCategory;
 }

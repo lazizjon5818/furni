@@ -27,7 +27,7 @@ export class ProductDetailsService {
    * @returns Mahsulot detallari ro'yxati
    */
   async findAll(): Promise<ProductDetail[]> {
-    return await this.productDetailModel.findAll();
+    return await this.productDetailModel.findAll({ include: { all: true } });
   }
 
   /**

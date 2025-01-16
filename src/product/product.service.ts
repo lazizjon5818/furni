@@ -25,7 +25,7 @@ export class ProductService {
    */
   async findAll(): Promise<{ products: Product[]; total: number }> {
     const { rows: products, count: total } =
-      await this.productModel.findAndCountAll();
+      await this.productModel.findAndCountAll({ include: { all: true } });
     return { products, total };
   }
 

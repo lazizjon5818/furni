@@ -6,7 +6,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminGuard } from '../common/guards';
 import { Public } from '../common/decorators';
 
-// @UseGuards(AdminGuard)
+@UseGuards(AdminGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}

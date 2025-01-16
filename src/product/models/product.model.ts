@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { ProductCategory } from 'src/product_category/models/product_category.model';
 // import { ProductCategory } from "../../product_category/models/product_category.model";
 // import { Customer } from "../../customer/models/customer.model";
 // import { ProductRating } from "../../product_rating/models/product_rating.model";
@@ -48,7 +49,7 @@ export class Product extends Model<Product, IProductCreationAttr> {
     example: 1,
     description: 'Category ID of the product',
   })
-  // @ForeignKey(() => ProductCategory)
+  @ForeignKey(() => ProductCategory)
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
@@ -152,8 +153,8 @@ export class Product extends Model<Product, IProductCreationAttr> {
   tags: string[];
 
   // Add other relevant fields and relationships here
-  // @BelongsTo(() => ProductCategory)
-  // product_category: ProductCategory;
+  @BelongsTo(() => ProductCategory)
+  product_category: ProductCategory;
 
   // @HasMany(() => ProductRating)
   // product_ratings: ProductRating[];

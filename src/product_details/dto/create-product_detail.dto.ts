@@ -96,36 +96,4 @@ export class CreateProductDetailDto {
   @IsOptional()
   @IsString()
   warranty_summary?: string;
-
-  @ApiProperty({
-    example: 'On-site',
-    description: 'Type of warranty service provided',
-  })
-  @IsOptional()
-  @IsString()
-  warranty_service_type?: string;
-
-  @ApiProperty({
-    example: 'All parts except fabric',
-    description: 'Items covered in warranty',
-  })
-  @IsOptional()
-  @IsString()
-  covered_in_warranty?: string;
-
-  @ApiProperty({
-    example: 'Fabric damage',
-    description: 'Items not covered in warranty',
-  })
-  @IsOptional()
-  @IsString()
-  not_covered_in_warranty?: string;
-
-  @ApiProperty({
-    example: '1 year',
-    description: 'Domestic warranty of the product',
-  })
-  @IsOptional()
-  @IsString()
-  domestic_warranty?: string;
 }
