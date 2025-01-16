@@ -5,6 +5,8 @@ import { CustomerModule } from './customer/customer.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
+import { ProductModule } from './product/product.module';
+import { ProductDetailsModule } from './product_details/product_details.module';
 import { ProductCategoryModule } from './product_category/product_category.module';
 @Module({
   imports: [
@@ -25,7 +27,10 @@ import { ProductCategoryModule } from './product_category/product_category.modul
     AuthModule,
     CustomerModule,
     PaymentMethodModule,
-    ProductCategoryModule
+    ProductCategoryModule,
+    ProductModule,
+    ProductDetailsModule
+
 
   ],
   controllers: [],
