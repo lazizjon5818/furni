@@ -5,6 +5,7 @@ import { CustomerModule } from './customer/customer.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { PaymentMethodModule } from './payment_method/payment_method.module';
+import { ProductCategoryModule } from './product_category/product_category.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -24,6 +25,7 @@ import { PaymentMethodModule } from './payment_method/payment_method.module';
     AuthModule,
     CustomerModule,
     PaymentMethodModule,
+    ProductCategoryModule
 
   ],
   controllers: [],
