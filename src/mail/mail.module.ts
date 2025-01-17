@@ -7,32 +7,33 @@ import { join } from 'path';
 
 
 @Module({
-  imports: [MailerModule.forRootAsync({
-    useFactory: async(config:ConfigService) => ({
-      transport: {
-        host: config.get<string>('SMTP_HOST'),
-        port: config.get('SMTP_PORT'),
-        secure: true,
-        auth: {
-          user: config.get<string>('SMTP_USER'),
-          pass: config.get<string>('SMTP_PASSWORD'),
+  imports: [
+    MailerModule.forRootAsync({
+      useFactory: async (config: ConfigService) => ({
+        transport: {
+          host: config.get<string>('SMTP_HOST'),
+          port: config.get('SMTP_PORT'),
+          secure: true,
+          auth: {
+            user: config.get<string>('SMTP_USER'),
+            pass: config.get<string>('SMTP_PASSWORD'),
+          },
         },
-      },
-      defaults: {
-        from: `"TastyUz" ${config.get<string>('SMTP_HOST')}`,
-      },
-      template: {
-        dir: join(__dirname, "templates"),
-        adapter: new HandlebarsAdapter(),
-        template: "confirm",
-        options: {
-          strict: true,
+        defaults: {
+          from: `"TastyUz" ${config.get<string>('SMTP_HOST')}`,
         },
-      },
+        template: {
+          dir: join(process.cwd(), 'src/mail/templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
     }),
-    inject: [ConfigService]
-  })],
+  ],
   providers: [MailService],
-  exports: [MailService]
+  exports: [MailService],
 })
 export class MailModule {}
