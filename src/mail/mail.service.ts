@@ -10,7 +10,7 @@ export class MailService {
     const url = `${process.env.API_URL}:${process.env.PORT}/customer/activate/${customer.activation_link}`;
     await this.mailerService.sendMail({
       to: customer.email,
-      subject: "Activate your TastyUz account",
+      subject: "Activate your Furnibayt account",
       template: "./confirm",
       context: {
         full_name: `${customer.first_name} ${customer.last_name}`,
