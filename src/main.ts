@@ -14,7 +14,14 @@ async function start() {
       logger: WinstonModule.createLogger(winstonConfig),
     });
     app.enableCors();
-    app.useGlobalPipes(new ValidationPipe());
+    // Enable validation globally
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true, // Enable automatic type conversion
+        whitelist: true, // Strip out properties not in the DTO
+        forbidNonWhitelisted: true, // Throw an error if extra properties are present
+      }),
+    );
     app.use(cookieParser());
     app.useGlobalFilters(new AllExceptionsFilter());
 

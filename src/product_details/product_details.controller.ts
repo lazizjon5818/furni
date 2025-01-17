@@ -1,82 +1,131 @@
 import {
-  Body,
   Controller,
-  Delete,
+  Post,
+  Body,
   Get,
   Param,
-  Patch,
-  Post,
+  Put,
+  Delete,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AdminGuard } from 'src/common/guards';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateProductDetailDto } from './dto/create-product_detail.dto';
 import { UpdateProductDetailDto } from './dto/update-product_detail.dto';
 import { ProductDetailsService } from './product_details.service';
+import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { AdminGuard } from 'src/common/guards';
 import { Public } from 'src/common/decorators';
 
-@UseGuards(AdminGuard)
+@ApiTags('Product Details')
 @Controller('product-details')
+@UseGuards(AdminGuard)
 export class ProductDetailsController {
   constructor(private readonly productDetailsService: ProductDetailsService) {}
 
-  @ApiOperation({ summary: 'Creating product detail' })
+  /**
+   * Create a new product detail
+   * @param createProductDetailDto
+   */
+  @ApiOperation({ summary: 'Create a new product detail' })
   @ApiResponse({
     status: 201,
-    description: 'Create product detail',
-    type: Object,
+    description: 'Product detail created successfully.',
   })
-  @Post('create')
-  create(@Body() createProductDetailDto: CreateProductDetailDto) {
-    return this.productDetailsService.create(createProductDetailDto);
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @Post()
+  async create(@Body() createProductDetailDto: CreateProductDetailDto) {
+    return await this.productDetailsService.create(createProductDetailDto);
   }
 
-  @ApiOperation({ summary: 'get all product details' })
+  /**
+   * Retrieve all product details with optional filtering, sorting, and pagination
+   * @param query
+   */
+  @ApiOperation({
+    summary:
+      'Retrieve all product details with optional filtering, sorting, and pagination',
+  })
+  @ApiQuery({
+    name: 'filter',
+    required: false,
+    description: 'Filter by product detail fields',
+  })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: ['asc', 'desc'],
+    description: 'Order of sorting',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    example: 10,
+  })
   @ApiResponse({
     status: 200,
-    description: 'get all product details',
-    type: Object,
+    description: 'List of product details retrieved successfully.',
   })
   @Public()
-  @Get('get')
-  findAll() {
-    return this.productDetailsService.findAll();
+  @Get()
+  async findAll(@Query() query: PaginationDto) {
+    return await this.productDetailsService.findAll(query);
   }
 
-  @ApiOperation({ summary: 'get 1 product detail' })
+  /**
+   * Retrieve a single product detail by ID
+   * @param id
+   */
+  @ApiOperation({ summary: 'Retrieve a single product detail by ID' })
   @ApiResponse({
     status: 200,
-    description: 'get 1 product detail',
-    type: Object,
+    description: 'Product detail retrieved successfully.',
   })
+  @ApiResponse({ status: 404, description: 'Product detail not found.' })
   @Public()
-  @Get('get/:id')
-  findOne(@Param('id') id: string) {
-    return this.productDetailsService.findOne(+id);
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
+    return await this.productDetailsService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'update product detail' })
+  /**
+   * Update a product detail by ID
+   * @param id
+   * @param updateProductDetailDto
+   */
+  @ApiOperation({ summary: 'Update a product detail by ID' })
   @ApiResponse({
     status: 200,
-    description: 'update product detail',
-    type: Object,
+    description: 'Product detail updated successfully.',
   })
-  @Patch('update/:id')
+  @ApiResponse({ status: 404, description: 'Product detail not found.' })
+  @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateProductDetailDto: UpdateProductDetailDto,
   ) {
-    return this.productDetailsService.update(+id, updateProductDetailDto);
+    return await this.productDetailsService.update(id, updateProductDetailDto);
   }
 
-  @ApiOperation({ summary: 'delete product detail' })
+  /**
+   * Delete a product detail by ID
+   * @param id
+   */
+  @ApiOperation({ summary: 'Delete a product detail by ID' })
   @ApiResponse({
     status: 200,
-    description: 'delete product detail',
-    type: Object,
+    description: 'Product detail deleted successfully.',
   })
-  @Delete('delete/:id')
-  remove(@Param('id') id: string) {
-    return this.productDetailsService.remove(+id);
+  @ApiResponse({ status: 404, description: 'Product detail not found.' })
+  @Delete(':id')
+  async remove(@Param('id') id: number) {
+    return await this.productDetailsService.remove(id);
   }
 }
