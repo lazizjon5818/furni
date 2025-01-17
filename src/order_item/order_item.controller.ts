@@ -25,21 +25,21 @@ export class OrderItemController {
   }
 
   @Get('get')
-  @ApiOperation({ summary: 'Get all order ' })
+  @ApiOperation({ summary: 'Get all order_item ' })
   @ApiResponse({ status: 201, description: 'Get All Order ' })
   findAll() {
     return this.orderItemService.findAll();
   }
 
   @Get('get/:id')
-  @ApiOperation({ summary: 'Get find order ' })
+  @ApiOperation({ summary: 'Get find order_item ' })
   @ApiResponse({ status: 201, description: 'Get Find Order ' })
   findOne(@Param('id') id: string) {
     return this.orderItemService.findOne(+id);
   }
 
   @Patch('update/:id')
-  @ApiOperation({ summary: 'Update order ' })
+  @ApiOperation({ summary: 'Update order_item ' })
   @ApiResponse({ status: 201, description: 'Updating order' })
   update(
     @Param('id') id: string,
@@ -49,7 +49,7 @@ export class OrderItemController {
   }
 
   @Delete('delete/:id')
-  @ApiOperation({ summary: 'Delete order ' })
+  @ApiOperation({ summary: 'Delete order_item ' })
   @ApiResponse({ status: 201, description: 'Delete Order' })
   remove(@Param('id') id: string) {
     return this.orderItemService.remove(+id);
