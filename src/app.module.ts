@@ -14,6 +14,7 @@ import { OrderModule } from './order/order.module';
 import { OrderItemModule } from './order_item/order_item.module';
 import { OrderAddressModule } from './order_address/order_address.module';
 import { PaymentModule } from './payment/payment.module';
+import { ProductCommentModule } from './product_comment/product_comment.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PaymentModule } from './payment/payment.module';
     ProductCategoryModule,
     ProductModule,
     ProductDetailsModule,
+    ProductCommentModule,
     OrderModule,
     OrderItemModule,
     OrderAddressModule,
