@@ -1,84 +1,126 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+import { PaginationDto } from 'src/admin/dto/pagination.dto';
+import { createApiResponse } from '../common/utils';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './models/product.model';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(Product) private readonly productModel: typeof Product,
+    @InjectModel(Product)
+    private readonly productModel: typeof Product,
   ) {}
 
   /**
-   * Mahsulot yaratish
+   * Create a new product
    * @param createProductDto
-   * @returns Yangi yaratilgan mahsulot
    */
-  async create(createProductDto: CreateProductDto): Promise<Product> {
-    return await this.productModel.create(createProductDto);
+  async create(createProductDto: CreateProductDto) {
+    const newProduct = await this.productModel.create(createProductDto);
+    return createApiResponse(201, 'Product created successfully', {
+      newProduct,
+    });
   }
 
   /**
-   * Hamma mahsulotlarni olish
-   * @returns Hamma mahsulotlar va ularning umumiy soni
+   * Retrieve all products with pagination, filtering, and ordering
+   * @param query Pagination and filtering options
    */
-  async findAll(): Promise<{ products: Product[]; total: number }> {
+  async findAll(query: PaginationDto) {
+    const { filter, order = 'asc', page = 1, limit = 10 } = query;
+
+    const offset = (page - 1) * limit;
+
+    // Filtering condition
+    const where = filter
+      ? {
+          [Op.or]: [
+            { title: { [Op.like]: `%${filter}%` } },
+            { description: { [Op.like]: `%${filter}%` } },
+          ],
+        }
+      : {};
+
+    // Find and count all products
     const { rows: products, count: total } =
-      await this.productModel.findAndCountAll({ include: { all: true } });
-    return { products, total };
+      await this.productModel.findAndCountAll({
+        where,
+        order: [['createdAt', order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']],
+        offset,
+        limit,
+      });
+
+    return createApiResponse(200, 'Products retrieved successfully', {
+      products,
+      total,
+      page,
+      limit,
+    });
   }
 
   /**
-   * ID bo'yicha mahsulotni olish
+   * Retrieve a product by ID
    * @param id
-   * @returns Mahsulot yoki xato
    */
-  async findOne(id: number): Promise<Product> {
+  async findOne(id: number) {
     const product = await this.productModel.findOne({
       where: { id },
-      include: { all: true },
     });
+
     if (!product) {
-      throw new NotFoundException(`Mahsulot ID ${id} topilmadi`);
+      throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    return product;
+
+    return createApiResponse(200, 'Product retrieved successfully', {
+      product,
+    });
   }
 
   /**
-   * Mahsulotni yangilash
+   * Update a product by ID
    * @param id
    * @param updateProductDto
-   * @returns Yangilangan mahsulot yoki xato
    */
-  async update(
-    id: number,
-    updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
-    const [affectedRows, updatedProducts] = await this.productModel.update(
-      updateProductDto,
-      {
-        where: { id },
-        returning: true,
-      },
-    );
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.productModel.findOne({
+      where: { id },
+    });
 
-    if (affectedRows === 0) {
-      throw new NotFoundException(`Mahsulot ID ${id} topilmadi`);
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
-    return updatedProducts[0];
+    await this.productModel.update(updateProductDto, {
+      where: { id },
+    });
+
+    const updatedProduct = await this.productModel.findOne({
+      where: { id },
+    });
+
+    return createApiResponse(200, 'Product updated successfully', {
+      updatedProduct,
+    });
   }
 
   /**
-   * Mahsulotni o'chirish
+   * Delete a product by ID
    * @param id
-   * @returns Xabar yoki xato
    */
-  async remove(id: number): Promise<void> {
-    const deletedRows = await this.productModel.destroy({ where: { id } });
-    if (deletedRows === 0) {
-      throw new NotFoundException(`Mahsulot ID ${id} topilmadi`);
+  async remove(id: number) {
+    const product = await this.productModel.findOne({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
     }
+
+    await this.productModel.destroy({ where: { id } });
+
+    return createApiResponse(200, `Product with ID ${id} deleted successfully`);
   }
 }

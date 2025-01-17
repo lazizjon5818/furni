@@ -13,7 +13,7 @@ export class CreateProductDto {
     example: 'Furniture',
     description: 'Name of the product',
   })
-  @IsString()
+  @IsString({ message: 'The title must be a string.' })
   title: string;
 
   @ApiProperty({
@@ -22,7 +22,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsOptional()
-  @IsNumber()
+  @IsNumber({}, { message: 'The categoryId must be a number.' })
   categoryId?: number;
 
   @ApiProperty({
@@ -31,15 +31,15 @@ export class CreateProductDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'The description must be a string.' })
   description?: string;
 
   @ApiProperty({
     example: 1000,
     description: 'Price of the product',
   })
-  @IsNumber()
-  @IsPositive()
+  @IsNumber({}, { message: 'The price must be a number.' })
+  @IsPositive({ message: 'The price must be a positive number.' })
   price: number;
 
   @ApiProperty({
@@ -49,16 +49,16 @@ export class CreateProductDto {
     ],
     description: 'Array of product images',
   })
-  @IsArray()
-  // @IsUrl() // Har bir element URL formatida bo'lishini tekshiradi
+  @IsArray({ message: 'The image must be an array.' })
+  @IsUrl({}, { each: true, message: 'Each image must be a valid URL.' }) // Har bir elementni URL formatida tekshiradi
   image: string[];
 
   @ApiProperty({
     example: ['white', 'black'],
     description: 'Array of product colors',
   })
-  @IsArray()
-  @IsString({ each: true }) // Har bir element string bo'lishi kerak
+  @IsArray({ message: 'The color must be an array.' })
+  @IsString({ each: true, message: 'Each color must be a string.' }) // Har bir elementni string formatida tekshiradi
   color: string[];
 
   @ApiProperty({
@@ -67,23 +67,23 @@ export class CreateProductDto {
     required: false,
   })
   @IsOptional()
-  @IsNumber()
-  @IsPositive()
+  @IsNumber({}, { message: 'The stock must be a number.' })
+  @IsPositive({ message: 'The stock must be a positive number.' })
   stock?: number;
 
   @ApiProperty({
     example: 4.5,
     description: 'Average rating of the product',
   })
-  @IsNumber()
-  @IsPositive()
+  @IsNumber({}, { message: 'The average rating must be a number.' })
+  @IsPositive({ message: 'The average rating must be a positive number.' })
   average_rating: number;
 
   @ApiProperty({
     example: 'SKU001',
     description: 'SKU of the product',
   })
-  @IsString()
+  @IsString({ message: 'The SKU must be a string.' })
   sku: string;
 
   @ApiProperty({
@@ -92,14 +92,14 @@ export class CreateProductDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'The additional info must be a string.' })
   additional_info?: string;
 
   @ApiProperty({
     example: ['furniture', 'modern', 'white'],
     description: 'Array of product tags',
   })
-  @IsArray()
-  @IsString({ each: true }) // Har bir element string bo'lishi kerak
+  @IsArray({ message: 'The tags must be an array.' })
+  @IsString({ each: true, message: 'Each tag must be a string.' }) // Har bir elementni string formatida tekshiradi
   tags: string[];
 }
