@@ -9,7 +9,7 @@ import { winstonConfig } from './common/helpers/winston.logger';
 
 async function start() {
   try {
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 3001;
     const app = await NestFactory.create(AppModule, {
       logger: WinstonModule.createLogger(winstonConfig),
     });

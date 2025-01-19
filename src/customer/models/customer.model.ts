@@ -94,6 +94,24 @@ export class Customer extends Model<Customer, ICustomerCreationAttr> {
   })
   activation_link: string;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  otp: string;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  otp_expiry: Date;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  is_activated: boolean;
+
   @ApiProperty({
     example: 'false',
     description:

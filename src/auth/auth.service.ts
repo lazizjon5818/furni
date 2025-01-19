@@ -203,42 +203,38 @@ export class AuthService {
   }
 
   async signUpCustomer(createCustomerDto: CreateCustomerDto, res: Response) {
-    const user = await this.customerService.findUserByEmail(
-      createCustomerDto.email,
-    );
+    const user = await this.customerService.findUserByEmail(createCustomerDto.email);
     if (user) {
       throw new BadRequestException('User already exists');
     }
-
+  
     if (createCustomerDto.password !== createCustomerDto.confirm_password) {
       throw new BadRequestException('Passwords do not match');
     }
-
-    const newUser = await this.customerService.create({
-      ...createCustomerDto,
-    });
-
+  
+    const newUser = await this.customerService.create({ ...createCustomerDto });
+  
     const tokens = await this.generateCustomerTokens(newUser);
-
+  
     const activation_link = uuid.v4();
-    const updatedUser = await this.updateCustomerRefreshToken(
-      newUser.id,
-      tokens.refresh_token,
-      activation_link,
-    );
-
+    const updatedUser = await this.updateCustomerRefreshToken(newUser.id, tokens.refresh_token, activation_link);
+  
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       maxAge: +process.env.COOKIE_TIME,
     });
-
+  
     try {
-      await this.mailService.sendMail(updatedUser);
+      // OTP yuborish uchun sendOTP metodini chaqiramiz
+      await this.mailService.sendOTP(updatedUser); // OTP yuborish
+  
+      // Aktivatsiya emaili yuborish uchun sendMail metodini chaqiramiz
+      await this.mailService.sendMail(updatedUser); // Aktivatsiya emaili yuborish
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Error sending mail');
     }
-
+  
     const response = {
       message: 'Customer registered successfully',
       customer: updatedUser,
@@ -247,32 +243,59 @@ export class AuthService {
     return response;
   }
 
-  async signInCustomer(email: string, password: string, res: Response) {
-    const user = await this.customerService.findUserByEmail(email);
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
-
-    const isMatch = await bcrypt.compare(password, user.hashed_password);
-
-    if (!isMatch) {
-      throw new BadRequestException('Invalid password');
-    }
-
-    const tokens = await this.generateCustomerTokens(user);
-
-    await this.updateCustomerRefreshToken(user.id, tokens.refresh_token);
-    res.cookie('refresh_token', tokens.refresh_token, {
-      maxAge: +process.env.COOKIE_TIME,
-      httpOnly: true,
-    });
-
-    return {
-      message: 'User signed in succesfully',
-      id: user.id,
-      access_token: tokens.access_token,
-    };
+async verifyOTP(email: string, otp: string): Promise<string> {
+  const customer = await this.customerService.findUserByEmail(email);
+  if (!customer) {
+    throw new BadRequestException('User not found');
   }
+
+  if (!customer.otp || !customer.otp_expiry) {
+    throw new BadRequestException('OTP or OTP expiry is not set');
+  }
+
+  if (customer.otp !== otp) {
+    throw new BadRequestException('Invalid OTP');
+  }
+
+  const currentTime = new Date();
+  if (currentTime > customer.otp_expiry) {
+    throw new BadRequestException('OTP has expired');
+  }
+
+  customer.is_activated = true;
+  await customer.save();
+
+  return 'Account activated successfully';
+}
+
+  
+
+async signInCustomer(email: string, password: string, res: Response) {
+  const user = await this.customerService.findUserByEmail(email);
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.hashed_password);
+  if (!isMatch) {
+    throw new BadRequestException('Invalid password');
+  }
+
+  const tokens = await this.generateCustomerTokens(user);
+  await this.updateCustomerRefreshToken(user.id, tokens.refresh_token);
+
+  res.cookie('refresh_token', tokens.refresh_token, {
+    maxAge: +process.env.COOKIE_TIME,
+    httpOnly: true,
+  });
+
+  return {
+    message: 'User signed in successfully',
+    id: user.id,
+    access_token: tokens.access_token,
+  };
+}
+
 
   async signOutCustomer(refresh_token: string, res: Response) {
     try {

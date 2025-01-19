@@ -135,4 +135,10 @@ export class AuthController {
   ) {
     return this.authService.refreshCustomerToken(refresh_token, res);
   }
+  
+  @Post('verify-otp')
+  async verifyOTP(@Body() body: { email: string; otp: string }) {
+    const result = await this.authService.verifyOTP(body.email, body.otp);
+    return { message: result };
+  }
 }
